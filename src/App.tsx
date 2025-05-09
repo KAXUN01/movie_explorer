@@ -8,7 +8,7 @@ import Login from "./pages/Login";
 import MovieDetails from "./components/MovieDetails";
 import theme from "./theme";
 
-const App = () => (
+const App: React.FC = () => (
   <ThemeProvider theme={theme}>
     <CssBaseline />
     <MovieProvider>
