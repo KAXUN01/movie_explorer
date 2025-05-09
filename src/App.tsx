@@ -7,6 +7,8 @@ import Favorites from "./pages/Favorites";
 import Login from "./pages/Login";
 import MovieDetails from "./components/MovieDetails";
 import theme from "./theme";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const App: React.FC = () => (
   <ThemeProvider theme={theme}>
