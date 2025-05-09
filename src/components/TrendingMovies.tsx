@@ -10,6 +10,7 @@ interface Movie {
   poster_path: string;
   overview: string;
   release_date: string;
+  vote_average: number;
 }
 
 const TrendingMovies: React.FC = () => {
@@ -63,6 +64,7 @@ const TrendingMovies: React.FC = () => {
               title={movie.title}
               poster_path={movie.poster_path}
               release_date={movie.release_date}
+              vote_average={movie.vote_average}
             />
           </Box>
         ))}

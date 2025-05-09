@@ -4,12 +4,25 @@ import {
   CardMedia,
   CardContent,
   Typography,
-  Box,
   CardActionArea,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const MovieCard: React.FC<any> = ({ id, title, poster_path, release_date }) => {
+interface MovieCardProps {
+  id: number;
+  title: string;
+  poster_path: string | null;
+  release_date: string;
+  vote_average: number;
+}
+
+const MovieCard: React.FC<MovieCardProps> = ({
+  id,
+  title,
+  poster_path,
+  release_date,
+  vote_average,
+}) => {
   const navigate = useNavigate();
 
   return (
@@ -39,7 +52,8 @@ const MovieCard: React.FC<any> = ({ id, title, poster_path, release_date }) => {
             {title}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {release_date}
+            {new Date(release_date).getFullYear()} | ⭐{" "}
+            {vote_average.toFixed(2)}
           </Typography>
         </CardContent>
       </CardActionArea>
