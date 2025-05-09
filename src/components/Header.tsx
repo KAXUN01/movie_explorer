@@ -1,9 +1,10 @@
 import React from "react";
-import { IconButton, useTheme } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
-import { useColorMode } from "../ThemeContext"; // ✅ import from ThemeContext
+import { useTheme } from "@mui/material/styles";
+import { useColorMode } from "../ThemeContext"; // adjust path
 
-export const ThemeToggle: React.FC = () => {
+const ThemeToggle: React.FC = () => {
   const theme = useTheme();
   const { toggleColorMode } = useColorMode();
 
@@ -13,3 +14,5 @@ export const ThemeToggle: React.FC = () => {
     </IconButton>
   );
 };
+
+export default ThemeToggle;
