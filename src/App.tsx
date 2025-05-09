@@ -14,22 +14,28 @@ const isLoggedIn = !!localStorage.getItem("authToken");
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-const App: React.FC = () => (
-  <ColorModeProvider>
-    <MovieProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/movie/:id" element={<MovieDetails />} />
-          <Route
-            path="/"
-            element={isLoggedIn ? <Home /> : <Navigate to="/login" />}
-          />
-        </Routes>
-      </Router>
-    </MovieProvider>
-  </ColorModeProvider>
-);
+const App: React.FC = () => {
+  const isLoggedIn = !!localStorage.getItem("authToken");
+
+  return (
+    <ColorModeProvider>
+      <MovieProvider>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/"
+              element={isLoggedIn ? <Home /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/movie/:id"
+              element={isLoggedIn ? <MovieDetails /> : <Navigate to="/login" />}
+            />
+          </Routes>
+        </Router>
+      </MovieProvider>
+    </ColorModeProvider>
+  );
+};
 
 export default App;
