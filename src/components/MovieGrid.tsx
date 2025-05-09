@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
-import Box from '@mui/material/Box';
-import MovieCard from './MovieCard';
-import { MovieContext } from '../context/MovieContext';
+import React, { useContext } from "react";
+import Box from "@mui/material/Box";
+import MovieCard from "./MovieCard";
+import { MovieContext } from "../context/MovieContext";
 
 const MovieGrid: React.FC = () => {
   const { movies } = useContext(MovieContext);

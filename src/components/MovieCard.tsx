@@ -4,40 +4,42 @@ import {
   CardMedia,
   CardContent,
   Typography,
+  Box,
   CardActionArea,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-interface MovieProps {
-  id: number;
-  title: string;
-  poster_path: string;
-  release_date: string;
-  vote_average: number;
-}
-
-const MovieCard: React.FC<MovieProps> = ({
-  id,
-  title,
-  poster_path,
-  release_date,
-  vote_average,
-}) => {
+const MovieCard: React.FC<any> = ({ id, title, poster_path, release_date }) => {
   const navigate = useNavigate();
 
   return (
-    <Card>
-      <CardActionArea onClick={() => navigate(`/movie/${id}`)}>
+    <Card
+      onClick={() => navigate(`/movie/${id}`)}
+      sx={{
+        width: 230,
+        height: 400,
+        display: "flex",
+        flexDirection: "column",
+        cursor: "pointer",
+      }}
+    >
+      <CardActionArea sx={{ flexGrow: 1 }}>
         <CardMedia
           component="img"
           height="300"
-          image={`https://image.tmdb.org/t/p/w500${poster_path}`}
+          image={
+            poster_path
+              ? `https://image.tmdb.org/t/p/w300${poster_path}`
+              : "/no-poster.jpg"
+          }
           alt={title}
         />
         <CardContent>
-          <Typography variant="h6">{title}</Typography>
+          <Typography variant="subtitle1" fontWeight="bold" noWrap>
+            {title}
+          </Typography>
           <Typography variant="body2" color="text.secondary">
-            {release_date} | Rating: {vote_average}
+            {release_date}
           </Typography>
         </CardContent>
       </CardActionArea>
