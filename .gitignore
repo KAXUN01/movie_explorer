@@ -1,3 +1,5 @@
 node_modules
-.codesandbox
 .env
+.codesandbox
+build
+.eslintrc.css

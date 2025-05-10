@@ -109,23 +109,23 @@ const SearchBar: React.FC = () => {
       <FormControl fullWidth sx={{ mt: 2 }}>
   <InputLabel>Genre</InputLabel>
   <Select
-    value={genre ?? ""} // Ensures it defaults to an empty string if undefined
-    onChange={(e) => {
-      const value = e.target.value;
-      // If the value is an empty string, set genre to undefined
-      // Else, safely convert the value to a number
-      setGenre(value === "" ? undefined : parseInt(value, 10));
-    }}
-    label="Genre"
-  >
-    <MenuItem value="">All</MenuItem>
-    {GENRES.map((genre) => (
-      <MenuItem key={genre.id} value={genre.id}>
-        {genre.name}
-      </MenuItem>
-    ))}
-  </Select>
+  value={genre !== undefined ? String(genre) : ""}
+  onChange={(e) => {
+    const value = e.target.value;
+    setGenre(value === "" ? undefined : Number(value));
+  }}
+  label="Genre"
+>
+  <MenuItem value="">All</MenuItem>
+  {GENRES.map((g) => (
+    <MenuItem key={g.id} value={String(g.id)}>
+      {g.name}
+    </MenuItem>
+  ))}
+</Select>
+
 </FormControl>
+
 
       {/* Year Filter */}
       <TextField
