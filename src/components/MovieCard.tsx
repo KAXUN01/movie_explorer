@@ -4,39 +4,48 @@ import {
   CardMedia,
   CardContent,
   Typography,
+  IconButton,
   CardActionArea,
+  Box,
 } from "@mui/material";
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
-interface MovieCardProps {
-  id: number;
-  title: string;
-  poster_path: string | null;
-  release_date: string;
-  vote_average: number;
-}
-
-const MovieCard: React.FC<MovieCardProps> = ({
+const MovieCard: React.FC<any> = ({
   id,
   title,
   poster_path,
   release_date,
   vote_average,
+  onFavoriteChange,
 }) => {
   const navigate = useNavigate();
 
+  const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+  const isFavorite = favorites.some((movie: any) => movie.id === id);
+
+  const toggleFavorite = () => {
+    let updatedFavorites;
+    if (isFavorite) {
+      updatedFavorites = favorites.filter((movie: any) => movie.id !== id);
+    } else {
+      updatedFavorites = [...favorites, { id, title, poster_path, release_date, vote_average }];
+    }
+    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    if (onFavoriteChange) onFavoriteChange();
+  };
+
   return (
     <Card
-      onClick={() => navigate(`/movie/${id}`)}
       sx={{
         width: 230,
-        height: 400,
+        height: 420,
         display: "flex",
         flexDirection: "column",
         cursor: "pointer",
       }}
     >
-      <CardActionArea sx={{ flexGrow: 1 }}>
+      <CardActionArea onClick={() => navigate(`/movie/${id}`)} sx={{ flexGrow: 1 }}>
         <CardMedia
           component="img"
           height="300"
@@ -52,11 +61,15 @@ const MovieCard: React.FC<MovieCardProps> = ({
             {title}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {new Date(release_date).getFullYear()} | ⭐{" "}
-            {vote_average.toFixed(2)}
+            {new Date(release_date).getFullYear()} | ⭐ {vote_average.toFixed(2)}
           </Typography>
         </CardContent>
       </CardActionArea>
+      <Box display="flex" justifyContent="flex-end" p={1}>
+        <IconButton onClick={toggleFavorite} color="error">
+          {isFavorite ? <Favorite /> : <FavoriteBorder />}
+        </IconButton>
+      </Box>
     </Card>
   );
 };
