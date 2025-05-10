@@ -1,0 +1,32 @@
+name: Deploy Movie Explorer application
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout Source
+        uses: actions/checkout@v4
+      - name: Build docker image
+        run: docker build -t kaxun/movie-explorer-app .
+      - name: Login to docker hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Publish image to docker hub
+        run: docker push kaxun/movie-explorer-app:latest
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Pull image from docker hub
+        run: docker pull kaxun/movie-explorer-app:latest
+      - name: Delete old container
+        run: docker rm -f movie-explorer-app-container  
+      - name: Run docker container
+        run: docker run -d -p 80:3000 --name movie-explorer-app-container kaxun/movie-explorer-app
+      - name: Delete existing images
+        run: docker image prune -a -f
