@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Grid } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Paper,
+  Container,
+  Divider,
+} from "@mui/material";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import MovieCard from "../components/MovieCard";
 
 const Favorites: React.FC = () => {
@@ -16,22 +23,57 @@ const Favorites: React.FC = () => {
   };
 
   return (
-    <Box p={2}>
-      <Typography variant="h5" gutterBottom>
-        Your Favorite Movies
-      </Typography>
-      {favorites.length === 0 ? (
-        <Typography>No favorite movies found.</Typography>
-      ) : (
-        <Grid container spacing={2}>
-  {favorites.map((movie) => (
-    <Box key={movie.id} sx={{ width: { xs: "100%", sm: "48%", md: "23%" }, m: 1 }}>
-      <MovieCard {...movie} onFavoriteChange={handleFavoriteChange} />
-    </Box>
-  ))}
-</Grid>
-      )}
-    </Box>
+    <Container maxWidth="lg" sx={{ py: 3 }}>
+      <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+        <Typography variant="h4" gutterBottom>
+           Your Favorite Movies
+        </Typography>
+        <Divider sx={{ mb: 3 }} />
+
+        {favorites.length === 0 ? (
+          <Box
+            sx={{
+              textAlign: "center",
+              py: 5,
+              color: "text.secondary",
+            }}
+          >
+            <FavoriteBorderIcon sx={{ fontSize: 60, mb: 2 }} />
+            <Typography variant="h6">No favorite movies found.</Typography>
+            <Typography variant="body2">Start adding your favorite picks!</Typography>
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              gap: 2,
+              justifyContent: {
+                xs: "center", // Mobile: centered
+                sm: "flex-start", // Tablet & up: left-aligned
+              },
+            }}
+          >
+            {favorites.map((movie) => (
+              <Box
+                key={movie.id}
+                sx={{
+                  width: {
+                    xs: "100%", // Mobile: full width
+                    sm: "48%",  // Tablet: 2 per row
+                    md: "31%",  // Medium: 3 per row
+                    lg: "23%",  // Large: 4+ per row
+                  },
+                }}
+              >
+                <MovieCard {...movie} onFavoriteChange={handleFavoriteChange} />
+              </Box>
+            ))}
+          </Box>
+        )}
+      </Paper>
+    </Container>
   );
 };
 

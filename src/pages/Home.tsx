@@ -7,22 +7,46 @@ import { ThemeToggle } from "../components/ThemeToggle";
 
 const Home: React.FC = () => {
   return (
-    <Container maxWidth="lg">
-      <Box py={4}>
-        <Typography variant="h3" align="center" gutterBottom>
-          Movie Explorer <ThemeToggle />
-        </Typography>
+    <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 }, py: 4 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: { xs: 4, md: 5 },
+        }}
+      >
+        {/* Header */}
+        <Box
+          sx={{
+            textAlign: "center",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 2,
+            flexWrap: "wrap",
+          }}
+        >
+          <Typography variant="h3" component="h1">
+            Movie Explorer
+          </Typography>
+          <ThemeToggle />
+        </Box>
 
-        <Box mt={4}>
+        {/* Trending Movies Section */}
+        <Box>
           <Typography variant="h5" gutterBottom>
             Trending Movies
           </Typography>
           <TrendingMovies />
         </Box>
 
-        <SearchBar />
+        {/* Search Bar */}
+        <Box>
+          <SearchBar />
+        </Box>
 
-        <Box mt={4}>
+        {/* Search Results */}
+        <Box>
           <Typography variant="h5" gutterBottom>
             Search Results
           </Typography>
