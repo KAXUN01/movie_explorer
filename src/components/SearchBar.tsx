@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   TextField,
   IconButton,
   InputAdornment,
-  Typography,
   Box,
   List,
   ListItem,
@@ -14,19 +13,19 @@ import {
   FormControl,
   InputLabel,
   Slider,
+  Typography,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { MovieContext } from "../context/MovieContext";
 import { searchMovies } from "../api/tmdb";
 
-// Static genre list based on TMDb genre IDs
+// Constants for filter options
 const GENRES = [
   { id: 28, name: "Action" },
   { id: 12, name: "Adventure" },
   { id: 35, name: "Comedy" },
   { id: 18, name: "Drama" },
-  { id: 27, name: "Horror" },
-  { id: 10749, name: "Romance" },
+  // Add more genres as needed
 ];
 
 const MAX_RECENT = 5;
@@ -35,42 +34,47 @@ const RECENT_KEY = "recentMovieSearches";
 const SearchBar: React.FC = () => {
   const [query, setQuery] = useState("");
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
-  const [genre, setGenre] = useState<number>(0);
-  const [year, setYear] = useState<number | "">("");
-  const [rating, setRating] = useState<number>(0);
-
+  const [genre, setGenre] = useState<number | undefined>(undefined); // Default as undefined
+  const [year, setYear] = useState<number | undefined>(undefined);  // Default as undefined
+  const [rating, setRating] = useState<number>(0); // Default rating is 0
   const { setMovies, setLastSearch } = useContext(MovieContext);
 
-  const handleSearch = async (searchQuery?: string) => {
-    const activeQuery = searchQuery ?? query;
-    if (!activeQuery.trim()) return;
-  
+  // Handle search
+  const handleSearch = async (searchQuery: string = query) => {
+    if (!searchQuery.trim()) return;
+
     try {
-      const updatedRecent = [activeQuery, ...recentSearches.filter((q) => q !== activeQuery)].slice(0, MAX_RECENT);
+      // Save recent searches in localStorage
+      const updatedRecent = [
+        searchQuery,
+        ...recentSearches.filter((q) => q !== searchQuery),
+      ].slice(0, MAX_RECENT);
       localStorage.setItem(RECENT_KEY, JSON.stringify(updatedRecent));
       setRecentSearches(updatedRecent);
-  
-      const parsedGenre = genre === 0 ? undefined : genre;
-      const parsedYear = year === "" ? undefined : Number(year);
-      const parsedRating = rating === 0 ? undefined : rating;
-  
-      const res = await searchMovies(activeQuery, parsedGenre, parsedYear, parsedRating);
-      setMovies(res.data.results);
-      setLastSearch(activeQuery);
+
+      // Get movie data with filters
+      const res = await searchMovies(
+        searchQuery,
+        genre !== undefined ? genre : undefined,  // Ensure genre is undefined if not set
+        year !== undefined ? year : undefined,    // Ensure year is undefined if not set
+        rating > 0 ? rating : undefined           // Ensure rating is undefined if 0
+      );
+      setMovies(res.results);
+      setLastSearch(searchQuery);
     } catch (error) {
       console.error("Search error:", error);
     }
   };
-  
+
+  // Handle recent search click
+  const handleSelectRecent = (query: string) => {
+    setQuery(query);
+    handleSearch(query);
+  };
 
   const handleClearRecent = () => {
     localStorage.removeItem(RECENT_KEY);
     setRecentSearches([]);
-  };
-
-  const handleSelectRecent = (query: string) => {
-    setQuery(query);
-    handleSearch(query);
   };
 
   useEffect(() => {
@@ -82,6 +86,7 @@ const SearchBar: React.FC = () => {
 
   return (
     <Box>
+      {/* Search Input */}
       <TextField
         variant="outlined"
         fullWidth
@@ -100,44 +105,59 @@ const SearchBar: React.FC = () => {
         }}
       />
 
+      {/* Genre Filter */}
       <FormControl fullWidth sx={{ mt: 2 }}>
-        <InputLabel>Genre</InputLabel>
-        <Select
-  value={genre}
-  onChange={(e) => setGenre(Number(e.target.value))}
+  <InputLabel>Genre</InputLabel>
+  <Select
+  value={genre !== undefined ? String(genre) : ""}
+  onChange={(e) => {
+    const value = e.target.value;
+    setGenre(value === "" ? undefined : Number(value));
+  }}
   label="Genre"
 >
-  <MenuItem value={0}>All</MenuItem>
-  {GENRES.map((genre) => (
-    <MenuItem key={genre.id} value={genre.id}>
-      {genre.name}
+  <MenuItem value="">All</MenuItem>
+  {GENRES.map((g) => (
+    <MenuItem key={g.id} value={String(g.id)}>
+      {g.name}
     </MenuItem>
   ))}
 </Select>
-      </FormControl>
 
+</FormControl>
+
+
+      {/* Year Filter */}
       <TextField
         label="Year"
         type="number"
         fullWidth
         sx={{ mt: 2 }}
-        value={year}
-        onChange={(e) => setYear(e.target.value === "" ? "" : Number(e.target.value))}
-        inputProps={{ min: 1900, max: new Date().getFullYear() }}
+        value={year ?? ""} // Ensures it defaults to an empty string if undefined
+        onChange={(e) => setYear(e.target.value === "" ? undefined : parseInt(e.target.value))}
+        InputProps={{
+          inputProps: {
+            min: 1900,
+            max: new Date().getFullYear(),
+          },
+        }}
       />
 
+      {/* Rating Filter */}
       <Box sx={{ mt: 2 }}>
-        <Typography gutterBottom>Minimum Rating</Typography>
+        <Typography gutterBottom>Rating</Typography>
         <Slider
-  value={rating}
-  onChange={(e, newValue) => setRating(newValue as number)}
-  min={0}
-  max={10}
-  step={0.1}
-  valueLabelDisplay="auto"
-/>
+          value={rating}
+          onChange={(e, newValue) => setRating(newValue as number)}
+          min={0}
+          max={10}
+          step={0.1}
+          valueLabelDisplay="auto"
+          valueLabelFormat={(value) => `${value}`}
+        />
       </Box>
 
+      {/* Recent Search List */}
       {recentSearches.length > 0 && (
         <Box mt={2}>
           <Typography variant="subtitle2" gutterBottom>
