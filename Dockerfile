@@ -1,29 +1,23 @@
-# Step 1: Use a Node.js image to build the React app
-FROM node:16 AS build
+# Use an official Node runtime as a parent image
+FROM node:16
 
-# Set the working directory inside the container
+# Set the working directory to /app
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+# Copy the package.json and package-lock.json to the working directory
+COPY ./package*.json ./
 
-# Install dependencies
+# Install the dependencies
 RUN npm install
 
-# Copy the rest of the application code to the working directory
+# Copy the remaining application files to the working directory
 COPY . .
 
-# Build the React app for production
+# Build the application
 RUN npm run build
 
-# Step 2: Use an Nginx image to serve the built app
-FROM nginx:alpine
+# Expose port 3000 for the application
+EXPOSE 3000
 
-# Copy the built React app from the previous stage to the Nginx web root
-COPY --from=build /app/build /usr/share/nginx/html
-
-# Expose port 80 to serve the app
-EXPOSE 80
-
-# Start Nginx server
-CMD ["nginx", "-g", "daemon off;"]
+# Start the application
+CMD [ "npm", "run", "start" ]
